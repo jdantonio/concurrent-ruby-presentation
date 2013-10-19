@@ -11,6 +11,7 @@ class Echo < EventMachine::Connection
       puts 'Stopping...'
       EventMachine.stop
     else
+      send_data ">> #{data}\n"
       puts "ECHO: #{data}"
     end
   end
