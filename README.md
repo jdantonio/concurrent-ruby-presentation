@@ -12,12 +12,10 @@ The presentation was formally titled *Advanced Multithreading in Ruby* and had t
 ## Sample Code
 
 All of the source code shwon in the presentation is available in the `code` folder of this repo.
-It has all been tested in IRB running under MRI 2.0. As always, YMMV.
+It has all been tested in IRB running under MRI 2.0. It should work fine under MRI 1.9 and above
+and both JRuby and Rubinius running in 1.9 mode. As always, YMMV.
 
 ## Copyright
-
-This presentation is Copyright &copy; 2013 [Jerry D'Antonio](https://twitter.com/jerrydantonio).
-All Rights Reserved.
 
 All source code in the `code` folder is Copyright &copy; 2013 [Jerry D'Antonio](https://twitter.com/jerrydantonio).
 It is free software and may be redistributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.php).
