@@ -1,13 +1,25 @@
 # Presentation: Concurrent Ruby
 
-This is a presentation on Ruby concurrency I gave at [Cascadia Ruby](http://cascadiaruby.com/)
-in Portland, OR on Tuesday, October 22nd.
+This is a presentation on Ruby concurrency I gave at [RubyConf 2013](http://rubyconf.org/)
+in Miami Beach, FL on Saturday, November 9th. I previously gave a variation of this
+presentation at [Cascadia Ruby 2013](http://cascadiaruby.com/) in Portland, OR
+on Tuesday, October 22nd.
 
 ## Presentation Abstract
 
-The presentation was formally titled *Advanced Multithreading in Ruby* and had the following abstract:
+The presentation was formally titled [Advanced Concurrent Programming in Ruby](http://rubyconf.org/program#jerry-dantonio)
+and had the following abstract:
 
-> By now we've all heard apocalyptic pronouncements that because of multi-core processors all programmers are doomed to the eternal abyss of concurrent programming. I'm here to tell you that despite what the Chicken Littles say, the sky is not falling. Yes, concurrent programming is hard. Especially when you have to do it in the old-school lock-and-synchronize paradigm. But we live in the brave new world of asynchronous concurrency, event-driven programming, and actors. Between the native threads introduced in MRI 1.9 and the Java threading available to JRuby, Ruby is now a valid platform for concurrent applications. What we've been missing--until now--are the advanced concurrency tools available to other languages like Clojure, Scala, Erlang, and JavaScript. In this presentation we'll talk about the specific challenges faced when writing concurrent applications; we'll explore modern concurrency techniques such as agents, futures, and promises; and we'll use the concurrent-ruby gem to implement safe, reliable, and efficient concurrent code.
+> Rumor has it that you can't write concurrent programs in Ruby. People once believed
+> that the world was flat and we all know how that turned out. Between the native threads
+> introduced in MRI 1.9 and the JVM threading available to JRuby, Ruby is now a valid
+> platform for concurrent applications. What we've been missing--until now--are the
+> advanced concurrency tools available to other languages like Clojure, Scala, Erlang,
+> and Go. In this session we'll talk about the specific challenges faced when writing
+> concurrent applications; we'll explore modern concurrency techniques such as agents,
+> futures, promises, reactors, and supervisors; and we'll use various open source tools
+> to craft safe, reliable, and efficient concurrent code. We'll write most of our code
+> using the Concurrent Ruby gem but we'll also explore EventMachine and Celluloid.
 
 ## Sample Code
 
