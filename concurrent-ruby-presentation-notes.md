@@ -1,6 +1,7 @@
 # Ruby Concurrency
 
-Hello, my name is Jerry D'Antonio. I work for VHT, an Erlang and Ruby shop in Akron, Ohio. Today I'm here to talk to you about concurrency.
+Hello, my name is Jerry D'Antonio. I work for VHT (forerly Virtual Hold Technology),
+an Erlang and Ruby shop in Akron, Ohio. Today I'm here to talk to you about concurrency.
 
 ## Slide 1: Introduction
 
@@ -12,23 +13,29 @@ The word of the day is "Asynchronous"
 * With asynchronous concurrency we *coordinate* independent operations without locking
 * There are many patterns for performing asynchronous concurrency
 
-### What we'll cover
+### What We'll Cover
 
 Today we will look at numerous asynchronous concurrency abstractions
 
 * Each is available in one or more programming languages other than Ruby--either as a widely-followed specification, in the standard library, or in the language itself
 * We will look at a *ton* of source code
 * All the source code is available in a GitHub repo along with the slides and the notes
+* Most of the code we will look at will use the Concurrent Ruby gem
+  * An MIT licensed open source gem that I created
+  * We use it at VHT
+  * Intended to be a "utility belt" with a bunch of useful concurrency tools
+  * Simple-yet-powerful tools, loosely coupled, each with a single purpose
+  * Each is based on a concurrency tool available in another language
+  * It has no dependencies outside of the Ruby standard library
+  * It does not use Fibers so behaves consistently across interpreters
+  * It has no known incompatabilities with any major gems
+  * It should be usable in any program you want to use it in--programs that already exist and that you have yet to write
+  * It is available on GitHub (https://github.com/jdantonio/concurrent-ruby)
+  * And Rubygems (https://rubygems.org/gems/concurrent-ruby)
+* Time permitting we will also look at two other gems
+  * EventMachine (http://rubyeventmachine.com/)
+  * Celluloid (http://celluloid.io/)
 * We don't have time to go over all the code line-by-line so I ask that you focus on the *concepts* and examine the code in detail later
-
-### Structure
-
-I am going to break this presentation into three sections:
-
-* First I will do a whirlwind tour of several simple--yet powerul--abstractions that can be used in any program
-* I will follow that with two paradigms around which you can design entire concurrent systems
-* Even-driven programming
-* The actor model
 
 ## Slide 2: Crash Test Dummy
 
@@ -70,23 +77,6 @@ The first abstraction we are going to look at is the *future*.
 
 ## Slide 5: Simple Future code sample
 
-### Concurrent Ruby gem
-
-The following several code examples come from the concurrent-ruby gem
-
-* https://github.com/jdantonio/concurrent-ruby
-* A gem I put together and maintain
-* A gem we use at VHT
-* Intended to be a "utility belt" with a bunch of useful concurrency tools
-* Simple-yet-powerful tools, loosely coupled, each with a single purpose
-* Each is based on a concurrency tool available in another language
-* It has no dependencies outside of the Ruby standard library
-* It does not use Fibers so behaves consistently across interpreters
-* It has no known incompatabilities with any major gems
-* It should be usable in any program you want to use it in--programs that already exist and that you have yet to write
-
-### Fulfillment
-
 The first code example shows a successful operation:
 
 * Creates a new `Finance` object and send it to the future
@@ -96,8 +86,6 @@ The first code example shows a successful operation:
 * On success the state of the object becomes `:fulfilled` and the value of the future becomes the result of the operation
 * From  this point forward the future is *immutable*
 * A future does one thing and then is done forever
-
-### Rejection
 
 The second example is similar to the first but shows the failure case:
 
@@ -145,7 +133,7 @@ The next abstraction we will look at is the agent
 * Although not shown on this slide, this implementation of agen supports the `Observable` module, validation of the result of each operation, and exception handling callbacks (errorback)
 * It also provides options for how to handle the return value when the `#value` method is called
 
-### Possible bug
+### Possible Bug
 
 This code does one *very* bad thing:
 
@@ -197,7 +185,7 @@ https://github.com/headius/thread_safe
 * Built be a member of the JRuby core team (but supports MRI and Rbx, too)
 * Access to the internal array in this example is thread-safe, but we still provide a mutable reference
 
-### Remember…
+### Remember...
 
 *Thread-safety and immutability are not the same thing*
 
@@ -205,49 +193,138 @@ https://github.com/headius/thread_safe
 
 Note: This agent implementation provides a couple of constructor arguments that can help--see the README
 
-## Slide 12: The utility belt
+## Slide 12: Promises, Promises
 
-In the interest of time we are going to go through the next few code examples very fast
-
-* Each slide shows another abstraction from the Concurrent Ruby library
-* Each abstraction exists in another language
-* We'll look at each example very quickly, just to introduce the concept
-
-## Slide 13: Promises, Promises
+A `Promise` is a variation of the Future abstraction we saw earlier. It's the most prominent asynchronous
+concurrency abstraction in JavaScript. jQuery calls them *defers*.
 
 * http://wiki.commonjs.org/wiki/Promises/A
 * http://promises-aplus.github.io/promises-spec/
+
+* Colloquialially, "future" (with a lowercase "f") is any asynchronous abstraction that represents
+  an operation that will occur at some nondeterministic time in the future
+* The Future class we saw early is just one possible variation
+* "Promise" and "Defer" are also names for futures
+* Different libraries implement them differently, or implement them the same but call
+  them different things
+* It is common to hear/read the phrase "method X returns a future"
+* The Concurrent Ruby library uses the `Oblgation` mixin to define the "future" API
+
+## Slide 13: Simple Promise code sample
 
 * Popular in JavaScript (called *defer* in jQuery)
 * Similar to the future we saw earlier but chainiable
 * A promise begets a promise which begets a promise…
 * There are strict rules for the ordering of operations in promise chains, specifically regarding failure/rejection
-* This implementation shares many methods with the `Future` class from the same library
 * This implementation is also very true to the Promises/A and Promises/A+ specifications
+* This implementation does *not* support `Observable`--it uses the built-in callback mechanism instead
 
-## Slide 14: TimerTask
+## Slide 14: Ticking time bomb
 
-* Common programming problem
+* We've all used `cron` and it's awesome. But sometimes we want `cron`-like functionality within our code
+* For one-time scheduling of an event we can use `ScheduledTask`
+* This implementation is loosely based on Java's `ScheduledExecutorService`
+* http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ScheduledExecutorService.html
+
+## Slide 15: ScheduledTask
+
+* `ScheduledTask` looks and acts much like `Future` except that execution is delayed
+* Execution time is defined at object creation
+  * A number of seconds from now
+  * Or a specific `Time`
+* The resulting object is a "future" in the context we previously discussed
+* And this implementation supports the same `Obligation` API of `Future` and `Promise`
+
+## Slide 16: More fun with ScheduledTask
+
+* This implementation of `ScheduledTask` mixes in Ruby's `Observable` module
+* And a `:pending` task can also be cancelled with the `#cancel` method
+
+## Slide 17: And so on and so on and so on...
+
+* The other `cron`-ish goodness we sometimes want to implement in code is a repetitive task that happens over and over and over again at regular intervals.
+* For this we use the `TimerTask` class.
+* This implementation is loosely based on the Java class of the same name
+* http://docs.oracle.com/javase/7/docs/api/java/util/TimerTask.html)
+
+## Slide 18: Simple TimerTask
+
 * Want to perform an operation at regular intervals (every 10 seconds, every 5 minutes, etc.)
 * Can be stopped and restarted at will
 
-## Slide 15: Lights, camera, action!
+## Slide 19: TimerTask with observation
 
-* Actors will be covered in more detail later in this presentation
-* This actor is based on the Actor trait from the Scala standard library: http://www.scala-lang.org/api/current/index.html#scala.actors.Actor
-* Simply extend the `Actor` class, override the `#act` method, and send messages to your actor using the `#post` method
-* This sample code is based on a Scala actor tutorial at http://www.scala-lang.org/old/node/242
+* The `TimerTask` class includes the `Observable` mixin module
 
-## Slide 16: Who watches the Watchmen?
+## Slide 20: TimerTask that changes its own execution
 
-This complex example combines actors, actor pools, timer tasks, and supervisors to show the power of the Concurrent Library
+* In rare cases a `TimerTask` may want to update its own execution lifecycle
+* On execution a reference to the task object will be passed as the first block parameter
+* The task can then alter its own lifecycle, even shutting itself down
+
+## Slide 21: All the world's a stage
+
+The actor model is becoming very popular lately, largely due to interest in Erlang. Actors are also surprisingly controversial in some circles.
+
+* The actor model was first proposed in 1973 by Originally proposed in 1973 by Carl Hewitt, Peter Bishop, and Richard Steiger at the M.I.T. Artificial Intelligence Laboratory
+* Much has changed since 1973
+* There is not universally accepted strict definition of what an actor is
+* Most would agree on the general idea but arguments over the details abound
+* Actor implementations vary widely--no two are the same
+
+### What is an actor?
+
+My definition:
+
+> An independent, concurrent, single-purpose, computational entity that communicates exclusively via message passing.
+
+## Slide 22: Actor and an Actor pool
+
+* The Actor class in this library is based solely on the Actor task defined in the Scala standard library.
+* http://www.scala-lang.org/api/current/index.html#scala.actors.Actor
+* It does not implement all the features of Scala's Actor
+* But its behavior for what *has* been implemented is nearly identical
+* The excluded features mostly deal with Scala's message semantics, strong typing,
+  and other characteristics of Scala that don't really apply to Ruby.
+* Unlike most of the abstractions in this library, `Actor` takes an *object-oriented*
+  approach to asynchronous concurrency, rather than a *functional programming* approach
+* Actors are defined by subclassing the `Concurrent::Actor` class and overriding the `#act` method
+* Actors can also be pooled--a collection of actors share the same mailbox
+
+## Slide 23: Different ways to post
+
+* There are several variations of the `#post` method available
+* The `#post?` method returns a "future" object that can be queried for the result
+* The `post!` method blocks and waits for the result
+  * `Concurrent::Runnable::LifecycleError` will be raised if the message cannot be
+    queued, such as when the `Actor` is not running.
+  * `Concurrent::TimeoutError` will be raised if the message is not processed within
+    the designated timeout period
+  * Any exception raised during message processing will be re-raised after all
+    post-processing operations (such as observer callbacks) have completed
+
+## Slide 24: Actor with observation
+
+* It should be no surprise by this time that `Actor` includes the `Observable` mixin
+  module and can be observed in standard fashion
+* Note that the observer's `#update` method also receives the message as an argument
+
+## Slide 25: Actor Ping Pong
+
+* The canonical actor example seems to be two actors playing ping pong
+* This is a Ruby variant of a Scala version implemented in a well-known tutorial
+* http://www.scala-lang.org/old/node/242
+
+## Slide 26: Who watches the Watchmen?
 
 * Erlang is known for its fault tolerance, known to be helped achieve nine-nines of uptime (99.9999999%) in one well-known case (http://stackoverflow.com/questions/8426897/erlangs-99-9999999-nine-nines-reliability)
 * The fault tolerance has less to do with the language and the virtual machine than it does deliberate design decisions
 * One key tool for obtaining high uptime is the Supervisor module
 * http://www.erlang.org/doc/man/supervisor.html
 
-### Supervision
+## Slide 27: The awesome power of the Supervisor
+
+This complex example combines actors, actor pools, timer tasks, and supervisors to show the power of the Concurrent Library
 
 * The supervisor class in the Concurrent Ruby library is a functionally-complete copy of Erlang's supervior in Ruby
 * Can be used with any object that supports three methods: a blocking `#run` method, a `#running?` predicate method, and a `#stop` method that can be called from a different thread
@@ -264,10 +341,10 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * Create a supervisor
 * Add the actors and the timer tasks to the supervisor as workers
 * Run the supervisor, which runs the workers
-* See spot run…
+* See spot run...
 * Stop everything by stopping the supervisor
 
-## Slide 17: Event-driven Programming
+## Slide 28: Event-driven Programming
 
 * The event-driven paradigm has become popular recently because of Node.js
 * JavaScript itself is event-driven
@@ -285,7 +362,7 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * All processing occurs on the reactor thread
 * All I/O happens on threads other than the reactor thread
 
-## Slide 18: Simple EventMachine echo server
+## Slide 29: Simple EventMachine echo server
 
 * EventMachine (http://rubyeventmachine.com/) is a Ruby reactor-based framework
 * It provides a reactor and numerous demultiplexers
@@ -307,7 +384,7 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * The telnet session in the upper right-hand corner shows this code in action
 * EventMchine is a great framework but it takes over your entire application when you use it
 
-## Slide 19: Fun with EventMachine
+## Slide 30: Fun with EventMachine
 
 * This is a deliberately contrived and complex example
 * It shows several demultiplexers and several event handlers
@@ -318,7 +395,7 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * It traps OS signals to shut down the reactor (control-c and control-z)
 * And it sets up an RPC server that uses Arachni-RPC to proxy calls to an array object
 
-## Slide 20: Meltdown
+## Slide 31: Meltdown
 
 *Do NOT block the reactor!*
 
@@ -327,9 +404,9 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * Long-running operations, such as blocking I/O, will block the reactor thread
 * The reactor will be unable to respond to new requests
 * Alway try to perform blocking operations on a thread other than the reactor thread
-* By do *NOT* spawn your own threads
+* But do *NOT* spawn your own threads
 
-## Slide 21: EM-friendly libraries
+## Slide 32: EM-friendly libraries
 
 * Whenever possible, use libraries specifically designed to work with EventMachine
 * This example updates the `Finance` class from earlier
@@ -338,7 +415,7 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * The code look very different because the new library is event-driven (callback-based)
 * But the new code plays nicely with EventMachine
 
-## Slide 22: EventMachine Defer
+## Slide 33: EventMachine Defer
 
 * Sometimes it will not be possible to rewrite the code using an EM-friendly library
 * This example uses the unmodified `Finance` class from earlier
@@ -347,23 +424,7 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * The `#defer` in this example is very similar to the future we saw at the beginning of the presentation, but only provides callbacks
 * Now the blocking I/O can happen on EventMachine's internal thread pool and not block the reactor
 
-## Slide 23: All the world's a stage
-
-The actor model is becoming very popular lately, largely due to interest in Erlang. Actors are also surprisingly controversial in some circles.
-
-* The actor model was first proposed in 1973 by Originally proposed in 1973 by Carl Hewitt, Peter Bishop, and Richard Steiger at the M.I.T. Artificial Intelligence Laboratory
-* Much has changed since 1973
-* There is not universally accepted strict definition of what an actor is
-* Most would agree on the general idea but arguments over the details abound
-* Actor implementations vary widely--no two are the same
-
-### What is an actor?
-
-My definition:
-
-> An independent, concurrent, single-purpose, computational entity that communicates exclusively via message passing.
-
-## Slide 24: Celluloid
+## Slide 34: Lights, camera, action!
 
 Celluloid is a Ruby actor framework.
 
@@ -378,7 +439,7 @@ Celluloid is a Ruby actor framework.
 * Celluloid conflates the message passing described by Hewitt et. al. with Alan Kay's classic Smalltalk quote in which he equates method calls with message passing
 * As a result, actors in Celluloid are fully asynchronous objects on which any method can be called asynchronously
 
-### The code
+## Slide 35: Celluloid
 
 * This is the same `Finance` class we have been using the entire presentation
 * The only difference is the `include Celluloid` line which turns objects of this class into Celluloid actors
@@ -386,7 +447,7 @@ Celluloid is a Ruby actor framework.
 * It can also be calles asynchronously via the `#async` proxy method
 * When called asynchronously it behaves similarly to the asynchronous abstractions we looked at earlier
 
-## Slide 25: Linking actors
+## Slide 36: Linking actors
 
 * This slide may seem odd at first, but it reveals important functionality
 * Celluloid allows actors to be linked so that they all die together
@@ -405,7 +466,7 @@ Celluloid is a Ruby actor framework.
 * As we see from the output, when the first actor dies all the actors in the tree die, thus ensuring we have no "partial" or "intermediate" state
 * What we need now is some way to restart the actor tree…
 
-## Slide 26: Supervisors, Part Deux
+## Slide 37: Supervisors, Part Deux
 
 * As with Concurrent Ruby, Celluloid provides mechanisms for actor pools and Erlang-inspired supervisors
 * As is the norm with Celluloid, these faetures are all tightly coupled
@@ -431,7 +492,7 @@ Celluloid is a Ruby actor framework.
 
 *Using Celluloid in your program is a commitment to Celluloid. It wants to be your complete concurrency solution. Be aware of the Celluloid "gotchas" when you make the commitment.*
 
-## Slide 27: Write Code!
+## Slide 38: Write Code!
 
 *This is my challenge to you: go write concurrent code!*
 
@@ -457,6 +518,3 @@ Celluloid is a Ruby actor framework.
 * `irb`
 
 *Write Code*
-
-
-
