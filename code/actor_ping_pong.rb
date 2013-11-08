@@ -55,6 +55,5 @@ pong.ping = ping
 
 t1 = ping.run!
 t2 = pong.run!
-sleep(0.1)
 
 ping << :pong

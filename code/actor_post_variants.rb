@@ -9,7 +9,6 @@ end
 
 life = EverythingActor.new
 life.run!
-sleep(0.1)
 
 universe = life.post?('What do you get when you multiply six by nine?')
 universe.pending? #=> true

@@ -8,7 +8,6 @@ end
 
 echo = EchoActor.new
 echo.run!
-sleep(0.1)
 
 echo.post("Don't panic") #=> true
 #=> ["Don't panic"] handled by #<EchoActor:0x007fc8014d0668>

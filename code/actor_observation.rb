@@ -21,7 +21,6 @@ end
 actor = SimpleActor.new
 actor.add_observer(ActorObserver.new)
 actor.run!
-sleep(0.1)
 
 actor.post(1)
 #=> (2013-11-07 18:35:33 -0500) Message [1] returned [1]
