@@ -7,7 +7,8 @@ All the source code examples in the latest version of the presentation use my
 
 Here is the conference/meetup list thus far:
 
-* ["Advanced Concurrent Programming in Ruby"](http://rubyconf.org/program#jerry-dantonio) at [RubyConf 2013](http://rubyconf.org/)
+* ["Advanced Concurrent Programming in Ruby"](http://rubyconf.org/program#jerry-dantonio) at [RubyConf 2013](http://rubyconf.org/),
+  available for viewing on [Confreaks](http://www.confreaks.com/videos/2872-rubyconf2013-advanced-concurrent-programming-in-ruby)
 * ["Advanced Multithreading in Ruby"](http://cascadiaruby.com/#advanced-multithreading-in-ruby) at [Cascadia Ruby 2013](http://cascadiaruby.com/),
   available for viewing on [Confreaks](http://www.confreaks.com/videos/2790-cascadiaruby2013-advanced-multithreading-in-ruby)
 * [Cleveland Ruby Brigade](http://www.meetup.com/ClevelandRuby/events/149981942/) meetup on 12/5/2013
