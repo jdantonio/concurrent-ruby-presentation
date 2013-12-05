@@ -15,6 +15,12 @@ The word of the day is "Asynchronous"
 
 ### What We'll Cover
 
+Today is about ideas, concepts, and abstractions. All modern programming languages tell their own concurrency story. Ask a Clojure programmer about concurrency and you’ll hear about agents and futures. Ask a Scala programmer about concurrency and you’ll hear about actors. Ask an Erlang programmer about concurrency and you’ll hear about gen_server and supervisor. Ask a Ruby programmer about concurrency and you’ll hear about… threads and mutexes.
+
+To paraphrase something I heard on Twitter recently, Ruby needs a better concurrency story.
+
+Concurrency is *not* about threads. Threads are simply a tool. Concurrency is about algorithms. Sometimes those algorithms are concerned with performances. Other times those algorithms are about simplicity. Remember when you first learned about recursion? Remember how amazing it was to discover that some algorithms were much simpler and cleaner when written recursively? The same is true with concurrency. Some algorithms are simple more elegant when expressed concurrently—even on a single core, single processor system. Performance of the underlying concurrency primitives (such as threads) will always be part of the discussion, much the way performance is always a part of a recursion discussion. But you need to understand the high-level ideas before you can talk about the low-level details.
+
 Today we will look at numerous asynchronous concurrency abstractions
 
 * Each is available in one or more programming languages other than Ruby--either as a widely-followed specification, in the standard library, or in the language itself
@@ -32,9 +38,6 @@ Today we will look at numerous asynchronous concurrency abstractions
   * It should be usable in any program you want to use it in--programs that already exist and that you have yet to write
   * It is available on GitHub (https://github.com/jdantonio/concurrent-ruby)
   * And Rubygems (https://rubygems.org/gems/concurrent-ruby)
-* Time permitting we will also look at two other gems
-  * EventMachine (http://rubyeventmachine.com/)
-  * Celluloid (http://celluloid.io/)
 * We don't have time to go over all the code line-by-line so I ask that you focus on the *concepts* and examine the code in detail later
 
 ## Slide 2: Crash Test Dummy
@@ -42,7 +45,7 @@ Today we will look at numerous asynchronous concurrency abstractions
 Before we start looking at the code, we need a crash test dummy.
 
 * Often when showing sample concurrent code we use `sleep` statements to simulate non-determinism
-* This works, but is something of a co-out
+* This works, but is something of a cop-out
 * For this presentation I have created a small class for test driving our sample code
 
 ## Slide 3: Finance class
