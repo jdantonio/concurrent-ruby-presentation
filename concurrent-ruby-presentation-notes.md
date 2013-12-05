@@ -211,7 +211,7 @@ concurrency abstraction in JavaScript. jQuery calls them *defers*.
 * Different libraries implement them differently, or implement them the same but call
   them different things
 * It is common to hear/read the phrase "method X returns a future"
-* The Concurrent Ruby library uses the `Oblgation` mixin to define the "future" API
+* The Concurrent Ruby library uses the `Obligation` mixin to define the "future" API
 
 ## Slide 13: Simple Promise code sample
 
