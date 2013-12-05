@@ -1,6 +1,6 @@
 # Ruby Concurrency
 
-Hello, my name is Jerry D'Antonio. I work for VHT (forerly Virtual Hold Technology),
+Hello, my name is Jerry D'Antonio. I work for VHT (formerly Virtual Hold Technology),
 an Erlang and Ruby shop in Akron, Ohio. Today I'm here to talk to you about concurrency.
 
 ## Slide 1: Introduction
@@ -28,7 +28,7 @@ Today we will look at numerous asynchronous concurrency abstractions
   * Each is based on a concurrency tool available in another language
   * It has no dependencies outside of the Ruby standard library
   * It does not use Fibers so behaves consistently across interpreters
-  * It has no known incompatabilities with any major gems
+  * It has no known incompatibilities with any major gems
   * It should be usable in any program you want to use it in--programs that already exist and that you have yet to write
   * It is available on GitHub (https://github.com/jdantonio/concurrent-ruby)
   * And Rubygems (https://rubygems.org/gems/concurrent-ruby)
@@ -99,7 +99,7 @@ The second example is similar to the first but shows the failure case:
 There are two ways to act upon the result of an asynchronous operation:
 
 * Query the asynchronous for the result (occurs on a different thread than the operation)
-* Provide a *callbac* operation to run when the operation is complete
+* Provide a *callback* operation to run when the operation is complete
 * The callback usually happens on the same thread as the asynchronous operation
 * The term *errorback* is occasionally used when a callback is only run in response to an error
 
@@ -110,7 +110,7 @@ There are two ways to act upon the result of an asynchronous operation:
 * This implementation of future supports Ruby's `Observable`
 * This code example creates an observer class
 * The `#update` method receives a `Time` object (representing the completion time of the future) and the final values of the `value` and `reason` attributes (one of which will always be `nil`)
-* The `#add_observer` method of the `Future` class is concurrency-aware and will behave correctly in the off-chance the future completes *beefore* the `#add_observer` method is called
+* The `#add_observer` method of the `Future` class is concurrency-aware and will behave correctly in the off-chance the future completes *before* the `#add_observer` method is called
 
 ## Slide 7: Secret Agent Man
 
@@ -130,7 +130,7 @@ The next abstraction we will look at is the agent
 * Several modification operations are then sent to the agent
 * Each operation receives the current value of the agent and returns the new value
 * The important thing to note is that operations on an agent need no *a priori* knowledge of the agent's value--it gets the current value when the operation is run
-* Although not shown on this slide, this implementation of agen supports the `Observable` module, validation of the result of each operation, and exception handling callbacks (errorback)
+* Although not shown on this slide, this implementation of agent supports the `Observable` module, validation of the result of each operation, and exception handling callbacks (errorback)
 * It also provides options for how to handle the return value when the `#value` method is called
 
 ### Possible Bug
@@ -148,7 +148,7 @@ Shard mutable variables are *bad*
 * When discussing concurrent programming one common mantra is "avoid shared mutable data"
 * This true--when possible *avoid shared mutable data*
 * This isn't always possible--sometimes data must be shared across threads
-* Many functional programming languages (Erlang, Clojurs, Haskell, F#) get around this by having *immutable* variables
+* Many functional programming languages (Erlang, Clojure, Haskell, F#) get around this by having *immutable* variables
 * Not in Ruby--all our variables are *references to mutable objects*
 * In the previous slide we passed such a reference out of our agent every time we called the `#value` method
 * *Any* thread with a reference to the array can change the value
@@ -201,7 +201,7 @@ concurrency abstraction in JavaScript. jQuery calls them *defers*.
 * http://wiki.commonjs.org/wiki/Promises/A
 * http://promises-aplus.github.io/promises-spec/
 
-* Colloquialially, "future" (with a lowercase "f") is any asynchronous abstraction that represents
+* Colloquially, "future" (with a lowercase "f") is any asynchronous abstraction that represents
   an operation that will occur at some nondeterministic time in the future
 * The Future class we saw early is just one possible variation
 * "Promise" and "Defer" are also names for futures
@@ -213,7 +213,7 @@ concurrency abstraction in JavaScript. jQuery calls them *defers*.
 ## Slide 13: Simple Promise code sample
 
 * Popular in JavaScript (called *defer* in jQuery)
-* Similar to the future we saw earlier but chainiable
+* Similar to the future we saw earlier but chainable
 * A promise begets a promise which begets a promise…
 * There are strict rules for the ordering of operations in promise chains, specifically regarding failure/rejection
 * This implementation is also very true to the Promises/A and Promises/A+ specifications
@@ -326,7 +326,7 @@ My definition:
 
 This complex example combines actors, actor pools, timer tasks, and supervisors to show the power of the Concurrent Library
 
-* The supervisor class in the Concurrent Ruby library is a functionally-complete copy of Erlang's supervior in Ruby
+* The supervisor class in the Concurrent Ruby library is a functionally-complete copy of Erlang's supervisor in Ruby
 * Can be used with any object that supports three methods: a blocking `#run` method, a `#running?` predicate method, and a `#stop` method that can be called from a different thread
 * The `Runnable` mixin module in this library provides that functionality
 * Simple add one or more workers to the Supervisor and it will manage the lifecycle of the workers, including restarting them on failure
@@ -349,7 +349,7 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 *This is my challenge to you: go write concurrent code!*
 
 * Concurrency is hard
-* Concurrent code behavies different
+* Concurrent code behaves differently
 * Concurrency requires different ways of thinking
 * Concurrency uses different designs
 
