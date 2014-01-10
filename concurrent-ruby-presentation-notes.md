@@ -318,14 +318,20 @@ My definition:
 * This is a Ruby variant of a Scala version implemented in a well-known tutorial
 * http://www.scala-lang.org/old/node/242
 
-## Slide 26: Who watches the Watchmen?
+## Slide 26: Don't change the channel!
+
+`Channel` is a functional programming variation of `Actor`, based very loosely on the [MailboxProcessor](http://blogs.msdn.com/b/dsyme/archive/2010/02/15/async-and-parallel-design-patterns-in-f-part-3-agents.aspx) agent in [F#](http://msdn.microsoft.com/en-us/library/ee370357.aspx). The `Actor` is used to create objects that receive messages from other threads then processes those messages based on the behavior of the class. `Channel` creates objects that receive messages and processe them using the block given at construction. `Channel` is implemented as a subclass of [Actor](https://github.com/jdantonio/concurrent-ruby/blob/master/md/actor.md) and supports all message-passing methods of that class. `Channel` also supports pools with a shared mailbox.
+
+See the [Actor](https://github.com/jdantonio/concurrent-ruby/blob/master/md/actor.md) documentation for more detail.
+
+## Slide 27: Who watches the Watchmen?
 
 * Erlang is known for its fault tolerance, known to be helped achieve nine-nines of uptime (99.9999999%) in one well-known case (http://stackoverflow.com/questions/8426897/erlangs-99-9999999-nine-nines-reliability)
 * The fault tolerance has less to do with the language and the virtual machine than it does deliberate design decisions
 * One key tool for obtaining high uptime is the Supervisor module
 * http://www.erlang.org/doc/man/supervisor.html
 
-## Slide 27: The awesome power of the Supervisor
+## Slide 28: The awesome power of the Supervisor
 
 This complex example combines actors, actor pools, timer tasks, and supervisors to show the power of the Concurrent Library
 
@@ -347,7 +353,7 @@ This complex example combines actors, actor pools, timer tasks, and supervisors 
 * See spot run...
 * Stop everything by stopping the supervisor
 
-## Slide 28: Write Code!
+## Slide 29: Write Code!
 
 *This is my challenge to you: go write concurrent code!*
 
