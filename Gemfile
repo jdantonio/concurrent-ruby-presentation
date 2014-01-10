@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'concurrent-ruby', '~> 0.3.0'
+gem 'concurrent-ruby', '~> 0.4.0'
 
 gem 'hamster', '~> 0.4.3'
 gem 'thread_safe', '~> 0.1.3'
