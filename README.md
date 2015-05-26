@@ -1,11 +1,12 @@
 # Presentation: Concurrent Ruby
 
 *NOTE: This presentation pre-dates the [API changes in the 0.5.0 release](https://github.com/jdantonio/concurrent-ruby/wiki/API-Updates-in-v0.5.0).
-Some of the code examples will no longer work. With all of the work we've been doing on the gem
-itself I haven't had an opportunity to update the code samples. The Gemfile in this repo specifies
-the version of the gem for which all the code examples will work. I recommend using that version
-when running the code in this presentation. I will update the code examples as soon as I can.
--- Jerry*
+Now that we're fast approaching a 1.0 release,* **nothing** *in this presentation is likely to
+be accurate. Except for some of the abstract concepts. Maybe.*
+
+*Please do* **NOT** *expect any of this code to work with the current version of the gem.*
+
+*-- Jerry*
 
 This is a presentation on Ruby concurrency I've given at several conferences and meetups in the
 fall of 2013. Tags mark the version of the presentation used at each conference/meetup.
